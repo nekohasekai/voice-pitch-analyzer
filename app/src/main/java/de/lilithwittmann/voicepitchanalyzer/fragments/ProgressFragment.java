@@ -2,10 +2,11 @@ package de.lilithwittmann.voicepitchanalyzer.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
@@ -47,15 +48,14 @@ public class ProgressFragment extends Fragment
         CombinedChart chart = (CombinedChart) view.findViewById(R.id.progress_chart);
         this.recordings = new RecordingList(this.getContext());
 
-        if (this.recordings != null)
-        {
+        if (!this.recordings.getGraphEntries().isEmpty()) {
             List<String> dates = this.recordings.getDates();
 
             CombinedData data = new CombinedData(dates);
 
             LineDataSet dataSet = new LineDataSet(this.recordings.getGraphEntries(), getResources().getString(R.string.progress));
             LineData lineData = new LineData(dates, dataSet);
-            BarData barData = new BarData(dates, GraphLayout.getOverallRange(this.getContext(), dates.size()));
+            BarData barData = new BarData(dates, GraphLayout.getOverallRange(getContext(), dates.size()));
 
             dataSet.setDrawCubic(true);
             dataSet.enableDashedLine(10, 10, 0);

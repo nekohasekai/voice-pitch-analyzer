@@ -2,7 +2,6 @@ package de.lilithwittmann.voicepitchanalyzer.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,33 +9,31 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import de.lilithwittmann.voicepitchanalyzer.R;
 import de.lilithwittmann.voicepitchanalyzer.models.PitchRange;
 import de.lilithwittmann.voicepitchanalyzer.models.Recording;
-import de.lilithwittmann.voicepitchanalyzer.models.Texts;
 import de.lilithwittmann.voicepitchanalyzer.models.database.RecordingDB;
 import de.lilithwittmann.voicepitchanalyzer.utils.AudioRecorder;
 import de.lilithwittmann.voicepitchanalyzer.utils.PitchCalculator;
@@ -180,7 +177,6 @@ public class RecordingFragment extends Fragment
     private void setSampleRate()
     {
         this.sampleRate = SampleRateCalculator.getMaxSupportedSampleRate();
-        Crashlytics.log(Log.DEBUG, "usedSampleRate", String.valueOf(this.sampleRate));
         Log.d("sample rate", String.valueOf(this.sampleRate));
     }
 
@@ -264,14 +260,12 @@ public class RecordingFragment extends Fragment
                     // if recording permission was granted, also request permission to modify audio settings
                     this.requestModifyAudioSettingsPermission();
                     Log.i(LOG_TAG, "permission granted");
-                    Crashlytics.log(Log.DEBUG, "recordingPermission", "true");
                 }
 
                 else
                 {
                     // disable "record" button if recording permission was denied
                     Log.i(LOG_TAG, "permission denied");
-                    Crashlytics.log(Log.DEBUG, "recordingPermission", "false");
                     this.disableRecordButton();
 
                     // show explanation why mic permission is needed
@@ -365,12 +359,10 @@ public class RecordingFragment extends Fragment
                             this.dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(testSampleRate, this.bufferRate, 0);
                         } catch (Exception exception_)
                         {
-                            Crashlytics.log(Log.DEBUG, "samplerate !supported", String.valueOf(testSampleRate));
                         }
 
                         if (this.dispatcher != null)
                         {
-                            Crashlytics.log(Log.DEBUG, "support only samplerate", String.valueOf(testSampleRate));
                             break;
                         }
                     }
@@ -378,8 +370,7 @@ public class RecordingFragment extends Fragment
                 }
             }
 
-            if (this.dispatcher == null)
-            {
+            if (this.dispatcher == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.device_sample_rate_not_supported)
                         .setTitle(R.string.device_sample_rate_not_supported_title);
@@ -387,26 +378,21 @@ public class RecordingFragment extends Fragment
                 dialog.show();
             }
 
-            PitchDetectionHandler pdh = new PitchDetectionHandler()
-            {
-                @Override
-                public void handlePitch(PitchDetectionResult result, AudioEvent e)
-                {
-                    final float pitchInHz = result.getPitch();
-                    //                    result.
-                    getActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            mListener.onPitchDetected(pitchInHz);
+            PitchDetectionHandler pdh = (result, e) -> {
+                final float pitchInHz = result.getPitch();
+                //                    result.
+                Activity activity = getActivity();
+                if (activity == null) return;
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mListener.onPitchDetected(pitchInHz);
 
-                            Log.i(LOG_TAG, String.format("Pitch: %s", pitchInHz));
-                            calculator.addPitch((double) pitchInHz);
-                            Log.i(LOG_TAG, String.format("Avg: %s (%s - %s)", calculator.calculatePitchAverage().toString(), calculator.calculateMinAverage().toString(), calculator.calculateMaxAverage().toString()));
-                        }
-                    });
-                }
+                        Log.i(LOG_TAG, String.format("Pitch: %s", pitchInHz));
+                        calculator.addPitch((double) pitchInHz);
+                        Log.i(LOG_TAG, String.format("Avg: %s (%s - %s)", calculator.calculatePitchAverage().toString(), calculator.calculateMinAverage().toString(), calculator.calculateMaxAverage().toString()));
+                    }
+                });
             };
 
             AudioProcessor p = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, this.sampleRate, this.bufferRate, pdh);
@@ -426,14 +412,7 @@ public class RecordingFragment extends Fragment
             this.recordThread = new Thread(dispatcher, "Audio Dispatcher");
             this.recordThread.start();
 
-            if (this.recordThread.isAlive())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return this.recordThread.isAlive();
         }
 
         return false;
@@ -460,7 +439,7 @@ public class RecordingFragment extends Fragment
                 {
                     Log.i(LOG_TAG, ex.getMessage());
                 }
-                Log.i(LOG_TAG, ex.getStackTrace().toString());
+                Log.i(LOG_TAG, Arrays.toString(ex.getStackTrace()));
             }
         }
 

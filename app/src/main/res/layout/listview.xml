@@ -36,7 +36,7 @@
             android:layout_alignStart="@android:id/text1"
             android:layout_alignLeft="@android:id/text1"
             android:textColor="@android:color/tertiary_text_light"
-            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
             />
 </TwoLineListItem>
 

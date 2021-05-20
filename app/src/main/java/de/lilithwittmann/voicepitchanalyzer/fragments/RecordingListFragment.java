@@ -2,22 +2,23 @@ package de.lilithwittmann.voicepitchanalyzer.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.lilithwittmann.voicepitchanalyzer.R;
 import de.lilithwittmann.voicepitchanalyzer.activities.RecordingListActivity;
-import de.lilithwittmann.voicepitchanalyzer.callbacks.ItemTouchHelperCallback;
 import de.lilithwittmann.voicepitchanalyzer.adapters.SwipeAdapter;
+import de.lilithwittmann.voicepitchanalyzer.callbacks.ItemTouchHelperCallback;
 import de.lilithwittmann.voicepitchanalyzer.models.Recording;
 import de.lilithwittmann.voicepitchanalyzer.models.database.RecordingDB;
 

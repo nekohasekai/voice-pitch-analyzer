@@ -3,15 +3,17 @@ package de.lilithwittmann.voicepitchanalyzer.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import de.lilithwittmann.voicepitchanalyzer.R;
-import de.lilithwittmann.voicepitchanalyzer.models.Texts;
+
+import androidx.fragment.app.Fragment;
 
 import java.util.Locale;
+
+import de.lilithwittmann.voicepitchanalyzer.R;
+import de.lilithwittmann.voicepitchanalyzer.models.Texts;
 
 /**
  * Reading material for display while doing a recording.

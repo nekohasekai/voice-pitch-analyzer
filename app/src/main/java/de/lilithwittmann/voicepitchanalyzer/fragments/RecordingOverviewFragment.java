@@ -4,7 +4,6 @@ package de.lilithwittmann.voicepitchanalyzer.fragments;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +11,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import de.lilithwittmann.voicepitchanalyzer.R;
 import de.lilithwittmann.voicepitchanalyzer.activities.RecordViewActivity;
